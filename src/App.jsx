@@ -7,7 +7,13 @@ let inner;
 let crt;
 
 function App() {
-  const cursorLocation = useRef({ x: null, y: null });
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
+  const cursorLocation = useRef({
+    x: null,
+    y: null,
+    deltaX: null,
+  });
   const card = useRef();
 
   const vwToPixel = (vw) => {
@@ -20,42 +26,72 @@ function App() {
   };
 
   const finishMove = (e) => {
+    card.current.style.transition = ".35s ease-out";
     window.removeEventListener("mousemove", moveMatchCard);
+    const likeToast = document.querySelector(".like-toast");
+    const dislikeToast = document.querySelector(".dislike-toast");
+    if (likeToast) likeToast.remove();
+    if (dislikeToast) dislikeToast.remove();
+    if (parseInt(card.current.style.left.slice(0, -2)) > 70) {
+      console.log("LIKED");
+      setLikes((likes) => (likes += 1));
+    }
+    if (parseInt(card.current.style.left.slice(0, -2)) < 30) {
+      console.log("DISLIKED");
+      setDislikes((likes) => (likes += 1));
+    }
     card.current.style.left = "50vw";
     card.current.style.transform = "translate(-50%, -50%)";
-    const likeToast = document.querySelector(".like-toast");
-    if (likeToast) likeToast.remove();
-    if (e.clientX > 0.7 * document.documentElement.clientWidth) {
-      console.log("LIKED");
-    }
+    setTimeout(() => {
+      card.current.style.transition = "none";
+    }, 500);
   };
+
+  useEffect(() => {
+    console.clear();
+    console.log("likes: ", likes);
+    console.log("dislikes: ", dislikes);
+  }, [likes, dislikes]);
 
   const moveMatchCard = (e) => {
     window.addEventListener("mouseup", finishMove);
-    let deltaX = e.clientX - cursorLocation.current.x;
-    let deltaY = e.clientY - cursorLocation.current.y;
+    card.current.style.transition = "none";
+    cursorLocation.current.deltaX = e.clientX - cursorLocation.current.x;
     card.current.style.left = "50vw";
     card.current.style.left = `${pixelToVw(
-      vwToPixel(card.current.style.left.slice(0, -2)) + deltaX,
+      vwToPixel(card.current.style.left.slice(0, -2)) +
+        cursorLocation.current.deltaX,
     )}vw`;
     card.current.style.transform = `rotate(${
-      deltaX / 75
+      cursorLocation.current.deltaX / 75
     }deg) translate(-50%, -50%)`;
     if (
-      e.clientX > 0.7 * document.documentElement.clientWidth &&
+      parseInt(card.current.style.left.slice(0, -2)) > 70 &&
       !document.querySelector(".like-toast")
     ) {
       const like = document.createElement("div");
-      console.log(like);
       like.classList.add("like-toast");
       card.current.appendChild(like);
       like.innerText = "Light It!";
     } else if (
-      e.clientX <= 0.7 * document.documentElement.clientWidth &&
+      parseInt(card.current.style.left.slice(0, -2)) <= 70 &&
       document.querySelector(".like-toast") !== null
     ) {
-      console.log("WHY NOT REMOVE!!!!");
       document.querySelector(".like-toast").remove();
+    }
+    if (
+      parseInt(card.current.style.left.slice(0, -2)) < 30 &&
+      !document.querySelector(".dislike-toast")
+    ) {
+      const dislike = document.createElement("div");
+      dislike.classList.add("dislike-toast");
+      card.current.appendChild(dislike);
+      dislike.innerText = "Burn it down!";
+    } else if (
+      parseInt(card.current.style.left.slice(0, -2)) >= 30 &&
+      document.querySelector(".dislike-toast")
+    ) {
+      document.querySelector(".dislike-toast").remove();
     }
   };
 
@@ -65,7 +101,6 @@ function App() {
   };
 
   useEffect(() => {
-    let inner = document.getElementById("drag-card");
     card.current.addEventListener("mousedown", dragCard);
   }, []);
 
@@ -73,7 +108,9 @@ function App() {
     <div className="container">
       <div className="droppable"></div>
       <div ref={card} className="inner">
-        DRAG ME
+        <p>
+          DRAG ME &nbsp; Dislikes: {dislikes} &nbsp; Likes: {likes}
+        </p>
       </div>
       <div className="droppable"></div>
     </div>

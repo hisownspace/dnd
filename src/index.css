@@ -86,7 +86,7 @@ button:focus-visible {
 }
 
 .inner {
-  background-color: tan;
+  background-color: #ffe4c4;
   position: absolute;
   width: 45vw;
   height: 90vh;
@@ -102,6 +102,15 @@ button:focus-visible {
 .like-toast {
   position: absolute;
   top: -20%;
-  left: 40%;
+  left: 42%;
   font-size: 50px;
+  color: gold;
+}
+
+.dislike-toast {
+  position: absolute;
+  top: -20%;
+  left: 33%;
+  font-size: 50px;
+  color: red;
 }
