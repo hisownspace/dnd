@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, createElement } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -22,7 +22,9 @@ function App() {
   const finishMove = (e) => {
     window.removeEventListener("mousemove", moveMatchCard);
     card.current.style.left = "50vw";
-    card.current.style.transform = "translate(-50%, 0)";
+    card.current.style.transform = "translate(-50%, -50%)";
+    const likeToast = document.querySelector(".like-toast");
+    if (likeToast) likeToast.remove();
   };
 
   const moveMatchCard = (e) => {
@@ -35,7 +37,23 @@ function App() {
     )}vw`;
     card.current.style.transform = `rotate(${
       deltaX / 75
-    }deg) translate(-50%, 0)`;
+    }deg) translate(-50%, -50%)`;
+    if (
+      e.clientX > 0.7 * document.documentElement.clientWidth &&
+      !document.querySelector(".like-toast")
+    ) {
+      const like = document.createElement("div");
+      console.log(like);
+      like.classList.add("like-toast");
+      card.current.appendChild(like);
+      like.innerText = "Light It!";
+    } else if (
+      e.clientX <= 0.7 * document.documentElement.clientWidth &&
+      document.querySelector(".like-toast") !== null
+    ) {
+      console.log("WHY NOT REMOVE!!!!");
+      document.querySelector(".like-toast").remove();
+    }
   };
 
   const dragCard = (e) => {

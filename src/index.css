@@ -82,28 +82,26 @@ button:focus-visible {
 .outer {
   height: 100vh;
   text-align: center;
-  vertical-align: middle;
-  line-height: 100vh;
   position: absolute;
 }
 
 .inner {
   background-color: tan;
-  width: 45vw;
-  margin: auto;
-  height: 100%;
   position: absolute;
+  width: 45vw;
+  height: 90vh;
+  top: 50vh;
   left: 50vw;
   border-radius: 20px;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, -50%);
+  line-height: 90vh;
+  vertical-align: middle;
+  user-select: none;
 }
 
-.card {
+.like-toast {
   position: absolute;
-  width: 90vw;
-  height: 90vh;
-  left: 5vw;
-  top: 5vh;
-  background-color: green;
-  border-radius: 10%;
+  top: -20%;
+  left: 40%;
+  font-size: 50px;
 }
