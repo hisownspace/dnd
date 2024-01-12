@@ -25,6 +25,9 @@ function App() {
     card.current.style.transform = "translate(-50%, -50%)";
     const likeToast = document.querySelector(".like-toast");
     if (likeToast) likeToast.remove();
+    if (e.clientX > 0.7 * document.documentElement.clientWidth) {
+      console.log("LIKED");
+    }
   };
 
   const moveMatchCard = (e) => {
