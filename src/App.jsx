@@ -1,10 +1,5 @@
-import { useState, useEffect, useRef, createElement } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
-
-let inner;
-let crt;
 
 function App() {
   const [likes, setLikes] = useState(0);
@@ -14,6 +9,9 @@ function App() {
     y: null,
     deltaX: null,
   });
+  const likeDiv = useRef(null);
+  const dislikeDiv = useRef(null);
+  const profileCard = useRef(null);
   const card = useRef();
 
   const vwToPixel = (vw) => {
@@ -28,10 +26,10 @@ function App() {
   const finishMove = (e) => {
     card.current.style.transition = ".35s ease-out";
     window.removeEventListener("mousemove", moveMatchCard);
-    const likeToast = document.querySelector(".like-toast");
-    const dislikeToast = document.querySelector(".dislike-toast");
-    if (likeToast) likeToast.remove();
-    if (dislikeToast) dislikeToast.remove();
+    likeDiv.current.classList.remove("visible-toast")
+    likeDiv.current.classList.add("hidden-toast")
+    dislikeDiv.current.classList.remove("visible-toast")
+    dislikeDiv.current.classList.add("hidden-toast")
     if (parseInt(card.current.style.left.slice(0, -2)) > 70) {
       console.log("LIKED");
       setLikes((likes) => (likes += 1));
@@ -67,31 +65,29 @@ function App() {
     }deg) translate(-50%, -50%)`;
     if (
       parseInt(card.current.style.left.slice(0, -2)) > 70 &&
-      !document.querySelector(".like-toast")
+      likeDiv.current.classList.contains("hidden-toast")
     ) {
-      const like = document.createElement("div");
-      like.classList.add("like-toast");
-      card.current.appendChild(like);
-      like.innerText = "Light It!";
+      likeDiv.current.classList.add("visible-toast")
+      likeDiv.current.classList.remove("hidden-toast")
     } else if (
       parseInt(card.current.style.left.slice(0, -2)) <= 70 &&
-      document.querySelector(".like-toast") !== null
+      likeDiv.current.classList.contains("visible-toast")
     ) {
-      document.querySelector(".like-toast").remove();
+      likeDiv.current.classList.remove("visible-toast")
+      likeDiv.current.classList.add("hidden-toast")
     }
     if (
       parseInt(card.current.style.left.slice(0, -2)) < 30 &&
-      !document.querySelector(".dislike-toast")
+      dislikeDiv.current.classList.contains("hidden-toast")
     ) {
-      const dislike = document.createElement("div");
-      dislike.classList.add("dislike-toast");
-      card.current.appendChild(dislike);
-      dislike.innerText = "Burn it down!";
+      dislikeDiv.current.classList.add("visible-toast")
+      dislikeDiv.current.classList.remove("hidden-toast")
     } else if (
       parseInt(card.current.style.left.slice(0, -2)) >= 30 &&
-      document.querySelector(".dislike-toast")
+      dislikeDiv.current.classList.contains("visible-toast")
     ) {
-      document.querySelector(".dislike-toast").remove();
+      dislikeDiv.current.classList.remove("visible-toast")
+      dislikeDiv.current.classList.add("hidden-toast")
     }
   };
 
@@ -108,9 +104,13 @@ function App() {
     <div className="container">
       <div className="droppable"></div>
       <div ref={card} className="inner">
-        <p>
-          DRAG ME &nbsp; Dislikes: {dislikes} &nbsp; Likes: {likes}
-        </p>
+      <div ref={likeDiv} className="like-toast hidden-toast">Light it!</div>
+      <div ref={dislikeDiv} className="dislike-toast hidden-toast">Burn it Down!</div>
+        <img
+          draggable="false"
+          ref={profileCard}
+          src="https://www.thedesignwork.com/wp-content/uploads/2011/10/Random-Pictures-of-Conceptual-and-Creative-Ideas-02.jpg"
+        />
       </div>
       <div className="droppable"></div>
     </div>

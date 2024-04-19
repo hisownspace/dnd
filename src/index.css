@@ -97,6 +97,8 @@ button:focus-visible {
   line-height: 90vh;
   vertical-align: middle;
   user-select: none;
+  color: black;
+  overflow-y: scroll;
 }
 
 .like-toast {
@@ -113,4 +115,17 @@ button:focus-visible {
   left: 33%;
   font-size: 50px;
   color: red;
+  z-index: 2;
+}
+
+.hidden-toast {
+  display: none;
+}
+
+.visible-toast {
+  display: inline;
+}
+
+.inner::-webkit-scrollbar {
+  display: none;
 }
