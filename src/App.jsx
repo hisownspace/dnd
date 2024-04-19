@@ -24,11 +24,9 @@ function App() {
   };
 
   const finishMove = (e) => {
-    card.current.style.transition = ".35s ease-out";
+    card.current.style.transition = ".45s ease-out";
     window.removeEventListener("mousemove", moveMatchCard);
-    likeDiv.current.classList.remove("visible-toast")
     likeDiv.current.classList.add("hidden-toast")
-    dislikeDiv.current.classList.remove("visible-toast")
     dislikeDiv.current.classList.add("hidden-toast")
     if (parseInt(card.current.style.left.slice(0, -2)) > 70) {
       console.log("LIKED");
@@ -40,9 +38,6 @@ function App() {
     }
     card.current.style.left = "50vw";
     card.current.style.transform = "translate(-50%, -50%)";
-    setTimeout(() => {
-      card.current.style.transition = "none";
-    }, 500);
   };
 
   useEffect(() => {
@@ -55,40 +50,24 @@ function App() {
     window.addEventListener("mouseup", finishMove);
     card.current.style.transition = "none";
     cursorLocation.current.deltaX = e.clientX - cursorLocation.current.x;
+
     card.current.style.left = "50vw";
+
+    // pull the card along with movement of the cursor left/right
     card.current.style.left = `${pixelToVw(
       vwToPixel(card.current.style.left.slice(0, -2)) +
         cursorLocation.current.deltaX,
     )}vw`;
+
+    // Rotate the card as it is dragged
     card.current.style.transform = `rotate(${
       cursorLocation.current.deltaX / 75
     }deg) translate(-50%, -50%)`;
-    if (
-      parseInt(card.current.style.left.slice(0, -2)) > 70 &&
-      likeDiv.current.classList.contains("hidden-toast")
-    ) {
-      likeDiv.current.classList.add("visible-toast")
-      likeDiv.current.classList.remove("hidden-toast")
-    } else if (
-      parseInt(card.current.style.left.slice(0, -2)) <= 70 &&
-      likeDiv.current.classList.contains("visible-toast")
-    ) {
-      likeDiv.current.classList.remove("visible-toast")
-      likeDiv.current.classList.add("hidden-toast")
-    }
-    if (
-      parseInt(card.current.style.left.slice(0, -2)) < 30 &&
-      dislikeDiv.current.classList.contains("hidden-toast")
-    ) {
-      dislikeDiv.current.classList.add("visible-toast")
-      dislikeDiv.current.classList.remove("hidden-toast")
-    } else if (
-      parseInt(card.current.style.left.slice(0, -2)) >= 30 &&
-      dislikeDiv.current.classList.contains("visible-toast")
-    ) {
-      dislikeDiv.current.classList.remove("visible-toast")
-      dislikeDiv.current.classList.add("hidden-toast")
-    }
+
+    const xPosition = parseInt(card.current.style.left.slice(0, -2));
+    // Display/hide the toasts when image is dragged far enough
+    likeDiv.current.classList = `like-toast${xPosition > 70 ? '' : ' hidden-toast'}`
+    dislikeDiv.current.classList = `dislike-toast${xPosition < 30 ? '' : ' hidden-toast'}`
   };
 
   const dragCard = (e) => {
